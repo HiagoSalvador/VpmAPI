@@ -13,10 +13,6 @@ import vpmLimp.DTO.SignUp;
 import vpmLimp.DTO.UserResponse;
 import vpmLimp.model.UserModel;
 import vpmLimp.repositories.UserModelRepository;
-
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +35,7 @@ public class AuthService {
         var user = userModelRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
         var jwt = jwtServices.generateToken(user);
-        return new JwtAuthResponse(jwt, user.getId());
+        return new JwtAuthResponse(jwt);
     }
 
     public UserResponse signUp(SignUp signUp) {
