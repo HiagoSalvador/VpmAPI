@@ -7,10 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import vpmLimp.DTO.JwtAuthResponse;
-import vpmLimp.DTO.LoginRequest;
-import vpmLimp.DTO.SignUp;
-import vpmLimp.DTO.UserResponse;
+import vpmLimp.DTO.*;
 import vpmLimp.model.UserModel;
 import vpmLimp.repositories.UserModelRepository;
 import java.util.List;
@@ -62,19 +59,17 @@ public class AuthService {
         }
 
 
-    public UserResponse updateUser(Long id, SignUp signUp) {
+    public UserResponse updateUser(Long id, UpdateUser updateUser) {
         UserModel user = userModelRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
 
-        user.setName(signUp.getName());
-        user.setEmail(signUp.getEmail());
-        user.setPassword(passwordEncoder.encode(signUp.getPassword()));
-        user.setAddress(signUp.getAddress());
-        user.setCity(signUp.getCity());
-        user.setState(signUp.getState());
-        user.setZipCode(signUp.getZipCode());
-        user.setPhone(signUp.getPhone());
-        user.setCpf(signUp.getCpf());
+        user.setEmail(updateUser.getEmail());
+        user.setPassword(passwordEncoder.encode(updateUser.getPassword()));
+        user.setAddress(updateUser.getAddress());
+        user.setCity(updateUser.getCity());
+        user.setState(updateUser.getState());
+        user.setZipCode(updateUser.getZipCode());
+        user.setPhone(updateUser.getPhone());
 
         return new UserResponse(userModelRepository.save(user));
     }

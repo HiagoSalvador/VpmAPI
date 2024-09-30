@@ -3,10 +3,7 @@ package vpmLimp.controllers;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vpmLimp.DTO.JwtAuthResponse;
-import vpmLimp.DTO.LoginRequest;
-import vpmLimp.DTO.SignUp;
-import vpmLimp.DTO.UserResponse;
+import vpmLimp.DTO.*;
 import vpmLimp.services.AuthService;
 
 import org.springframework.http.HttpStatus;
@@ -40,8 +37,8 @@ public class AuthController {
     }
 
     @PutMapping("/user/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody SignUp signUp) {
-        return ResponseEntity.ok().body(authService.updateUser(id, signUp));
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UpdateUser updateUser) {
+        return ResponseEntity.ok().body(authService.updateUser(id, updateUser));
     }
 
     @DeleteMapping("/user/{id}")
