@@ -7,6 +7,6 @@ import vpmLimp.model.ProductModel;
 import java.util.Optional;
 
 @Repository
-public interface ProductModelRepository extends JpaRepository<ProductModel, String> {
+public interface ProductModelRepository extends JpaRepository<ProductModel, Long> {
 
 }

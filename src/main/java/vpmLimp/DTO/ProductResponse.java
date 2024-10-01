@@ -1,6 +1,7 @@
 package vpmLimp.DTO;
 
 import lombok.*;
+import vpmLimp.model.ProductModel;
 
 @Value
 public class ProductResponse {
@@ -20,12 +21,15 @@ public class ProductResponse {
         this.description = description;
         this.price = price;
 
-
-
-
     }
 
 
+    public ProductResponse(ProductModel product) {
+        this.id = product.getId();
+        this.name = product.getName();
+        this.price = product.getPrice();
+        this.description = product.getDescription();
+    }
 
 
 
