@@ -19,14 +19,11 @@ public class ProductService {
     @Autowired
     private ProductModelRepository productModelRepository;
 
-
-
     public ProductResponse create(ProductRequest productRequest) {
         ProductModel product = new ProductModel();
         product.setName(productRequest.getName());
         product.setDescription(productRequest.getDescription());
         product.setPrice(productRequest.getPrice());
-
 
         ProductModel savedProduct = productModelRepository.save(product);
 
@@ -36,26 +33,24 @@ public class ProductService {
                 savedProduct.getDescription(),
                 savedProduct.getPrice()
         );
-
-
     }
 
     public ProductResponse updateProduct(UpdateProduct updateProduct, Long id){
         ProductModel product = productModelRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product not exists "));
-       product.setName(updateProduct.getName());
-       product.setPrice(updateProduct.getPrice());
-       product.setDescription(updateProduct.getDescription());
+        product.setName(updateProduct.getName());
+        product.setPrice(updateProduct.getPrice());
+        product.setDescription(updateProduct.getDescription());
 
-       return new ProductResponse(productModelRepository.save(product));
+        return new ProductResponse(productModelRepository.save(product));
 
     }
 
     public void deleteProduct(Long id){
-       if(!productModelRepository.existsById(id)){
-           throw new NoSuchElementException("Product not exists");
-       }
+        if(!productModelRepository.existsById(id)){
+            throw new NoSuchElementException("Product not exists");
+        }
 
-       productModelRepository.deleteById(id);
+        productModelRepository.deleteById(id);
     }
 
     public List<ProductResponse> getAllProducts(){

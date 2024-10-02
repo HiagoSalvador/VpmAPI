@@ -3,6 +3,7 @@ package vpmLimp.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vpmLimp.DTO.ProductRequest;
@@ -21,30 +22,29 @@ public class ProductController {
         private ProductService productService;
 
 
-        @PostMapping
-        public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest) {
-            ProductResponse productResponse = productService.create(productRequest);
-            return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
-        }
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest) {
+        return ResponseEntity.ok().body(productService.create(productRequest));
+    }
 
-        @PutMapping("/{id}")
-        public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id, @RequestBody UpdateProduct updateProduct) {
-            ProductResponse productResponse = productService.updateProduct(updateProduct, id);
-            return new ResponseEntity<>(productResponse, HttpStatus.OK);
-        }
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id, @RequestBody UpdateProduct updateProduct) {
+        return ResponseEntity.ok().body(productService.updateProduct(updateProduct, id));
+    }
 
-        @DeleteMapping("/{id}")
-        public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-            productService.deleteProduct(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
-        @GetMapping
-
-    public ResponseEntity <List<ProductResponse>> getAllProducts(){
-            List<ProductResponse> products = productService.getAllProducts();
-            return ResponseEntity.ok().body(products);
-        }
+    @GetMapping
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        return ResponseEntity.ok().body(productService.getAllProducts());
+    }
 
 
     }

@@ -9,8 +9,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import vpmLimp.DTO.*;
 import vpmLimp.model.UserModel;
+import vpmLimp.model.enums.Roles;
+import vpmLimp.repositories.RoleRepository;
 import vpmLimp.repositories.UserModelRepository;
+
+import javax.management.relation.RoleNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -24,6 +29,10 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserModelRepository userModelRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private RoleRepository roleRepository;
+
+
 
 
     public JwtAuthResponse login(LoginRequest request) {
@@ -87,6 +96,22 @@ public class AuthService {
                 .map(UserResponse::new)
                 .collect(Collectors.toList());
     }
+
+    public UserResponse makeAdmin(Long userId) throws RoleNotFoundException {
+        UserModel user = userModelRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
+        Roles adminRole = roleRepository.findByName("ADMIN")
+                .orElseThrow(() -> new RoleNotFoundException("Role 'ADMIN' not found."));
+
+        user.getRoles().add(adminRole);
+
+        userModelRepository.save(user);
+
+        return new UserResponse(user);
+    }
+
+
 
 
 

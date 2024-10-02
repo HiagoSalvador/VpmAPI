@@ -1,6 +1,7 @@
 package vpmLimp.controllers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vpmLimp.DTO.*;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.relation.RoleNotFoundException;
 import java.util.List;
 
 
@@ -53,5 +55,12 @@ public class AuthController {
         List<UserResponse> users = authService.getAllUsers();
         return ResponseEntity.ok().body(users);
     }
+
+    @PutMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserResponse> makeAdmin(@PathVariable Long id) throws RoleNotFoundException {
+        return ResponseEntity.ok().body(authService.makeAdmin(id));
+    }
+
 
 }
