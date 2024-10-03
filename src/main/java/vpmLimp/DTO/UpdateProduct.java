@@ -1,6 +1,5 @@
 package vpmLimp.DTO;
 
-import jakarta.persistence.Column;
 import lombok.Value;
 
 @Value

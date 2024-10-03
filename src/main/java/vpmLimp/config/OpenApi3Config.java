@@ -35,7 +35,6 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 )
 public class OpenApi3Config {
 
-
     @Bean
     public OpenAPI customizeOpenAPI() {
         final String securitySchemeName = "bearerAuth";

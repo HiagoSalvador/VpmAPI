@@ -5,11 +5,10 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import vpmLimp.model.enums.Roles;
-
+import vpmLimp.model.enums.UserRole;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+
 
 @Entity
 @Table(name ="user")
@@ -51,18 +50,21 @@ public class UserModel implements UserDetails {
     @Column(name = "cpf", unique = true, length = 11)
     private String cpf;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Roles> roles;
-
+    @Enumerated(EnumType.STRING)  // Persistir o enum como string
+    @Column(name = "role", nullable = false)
+    private UserRole role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles;
+        if (this.role == UserRole.ADMIN) {
+            return List.of(
+                    new SimpleGrantedAuthority("ROLE_ADMIN"),
+                    new SimpleGrantedAuthority("ROLE_USER")
+            );
+        } else {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        }
     }
-
 
     @Override
     public String getUsername() {
@@ -88,4 +90,6 @@ public class UserModel implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

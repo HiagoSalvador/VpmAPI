@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import vpmLimp.DTO.ProductRequest;
 import vpmLimp.DTO.ProductResponse;
 import vpmLimp.DTO.UpdateProduct;
-import vpmLimp.DTO.UserResponse;
 import vpmLimp.model.ProductModel;
 import vpmLimp.repositories.ProductModelRepository;
 

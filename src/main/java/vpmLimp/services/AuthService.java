@@ -1,24 +1,17 @@
 package vpmLimp.services;
 
+
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import vpmLimp.DTO.*;
 import vpmLimp.model.UserModel;
-import vpmLimp.model.enums.Roles;
-import vpmLimp.repositories.RoleRepository;
+import vpmLimp.model.enums.UserRole;
 import vpmLimp.repositories.UserModelRepository;
-
-import javax.management.relation.RoleNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-
 
 
 @Service
@@ -29,10 +22,6 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserModelRepository userModelRepository;
     private final PasswordEncoder passwordEncoder;
-
-    private RoleRepository roleRepository;
-
-
 
 
     public JwtAuthResponse login(LoginRequest request) {
@@ -45,27 +34,31 @@ public class AuthService {
     }
 
     public UserResponse signUp(SignUp signUp) {
-        UserModel user = this.userModelRepository.save(
-                UserModel.builder()
-                        .name(signUp.getName())
-                        .email(signUp.getEmail())
-                        .password(passwordEncoder.encode(signUp.getPassword()))
-                        .phone(signUp.getPhone())
-                        .cpf(signUp.getCpf())
-                        .address(signUp.getAddress())
-                        .city(signUp.getCity())
-                        .state(signUp.getState())
-                        .zipCode(signUp.getZipCode())
-                        .build()
-        );
+        UserRole role = (signUp.getRole() != null && !signUp.getRole().isEmpty()) ?
+                UserRole.valueOf(signUp.getRole()) : UserRole.USER;
+
+        UserModel user = UserModel.builder()
+                .name(signUp.getName())
+                .email(signUp.getEmail())
+                .password(passwordEncoder.encode(signUp.getPassword())) // Criptografa a senha
+                .phone(signUp.getPhone())
+                .cpf(signUp.getCpf())
+                .address(signUp.getAddress())
+                .city(signUp.getCity())
+                .state(signUp.getState())
+                .zipCode(signUp.getZipCode())
+                .role(role)
+                .build();
+
+        user = this.userModelRepository.save(user);
+
         return new UserResponse(user);
     }
-
-        public UserResponse getUserById(Long id) {
-            UserModel user = userModelRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("User not found."));
-            return new UserResponse(user);
-        }
+    public UserResponse getUserById(Long id) {
+        UserModel user = userModelRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+        return new UserResponse(user);
+    }
 
 
     public UserResponse updateUser(Long id, UpdateUser updateUser) {
@@ -97,22 +90,12 @@ public class AuthService {
                 .collect(Collectors.toList());
     }
 
-    public UserResponse makeAdmin(Long userId) throws RoleNotFoundException {
-        UserModel user = userModelRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-
-        Roles adminRole = roleRepository.findByName("ADMIN")
-                .orElseThrow(() -> new RoleNotFoundException("Role 'ADMIN' not found."));
-
-        user.getRoles().add(adminRole);
-
-        userModelRepository.save(user);
-
-        return new UserResponse(user);
-    }
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
