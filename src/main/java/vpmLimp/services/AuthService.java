@@ -26,27 +26,27 @@ public class AuthService {
 
     public JwtAuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        var user = userModelRepository.findByEmail(request.getEmail())
+                new UsernamePasswordAuthenticationToken(request.email(), request.password()));
+        var user = userModelRepository.findByEmail(request.email())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
         var jwt = jwtServices.generateToken(user);
         return new JwtAuthResponse(jwt);
     }
 
     public UserResponse signUp(SignUp signUp) {
-        UserRole role = (signUp.getRole() != null && !signUp.getRole().isEmpty()) ?
-                UserRole.valueOf(signUp.getRole()) : UserRole.USER;
+        UserRole role = (signUp.role() != null && !signUp.role().isEmpty()) ?
+                UserRole.valueOf(signUp.role()) : UserRole.USER;
 
         UserModel user = UserModel.builder()
-                .name(signUp.getName())
-                .email(signUp.getEmail())
-                .password(passwordEncoder.encode(signUp.getPassword())) // Criptografa a senha
-                .phone(signUp.getPhone())
-                .cpf(signUp.getCpf())
-                .address(signUp.getAddress())
-                .city(signUp.getCity())
-                .state(signUp.getState())
-                .zipCode(signUp.getZipCode())
+                .name(signUp.name())
+                .email(signUp.email())
+                .password(passwordEncoder.encode(signUp.password()))
+                .phone(signUp.phone())
+                .cpf(signUp.cpf())
+                .address(signUp.address())
+                .city(signUp.city())
+                .state(signUp.state())
+                .zipCode(signUp.zipCode())
                 .role(role)
                 .build();
 
@@ -65,13 +65,13 @@ public class AuthService {
         UserModel user = userModelRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
 
-        user.setEmail(updateUser.getEmail());
-        user.setPassword(passwordEncoder.encode(updateUser.getPassword()));
-        user.setAddress(updateUser.getAddress());
-        user.setCity(updateUser.getCity());
-        user.setState(updateUser.getState());
-        user.setZipCode(updateUser.getZipCode());
-        user.setPhone(updateUser.getPhone());
+        user.setEmail(updateUser.email());
+        user.setPassword(passwordEncoder.encode(updateUser.password()));
+        user.setAddress(updateUser.address());
+        user.setCity(updateUser.city());
+        user.setState(updateUser.state());
+        user.setZipCode(updateUser.zipCode());
+        user.setPhone(updateUser.phone());
 
         return new UserResponse(userModelRepository.save(user));
     }

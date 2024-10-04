@@ -1,20 +1,13 @@
 package vpmLimp.DTO;
 
 
-import lombok.Data;
 
 
-@Data
-public class ProductRequest {
+
+public record ProductRequest (String name,String description, Double price ) {
 
 
-    private String name;
 
-
-    private String description;
-
-
-    private Double price;
 
 
 }

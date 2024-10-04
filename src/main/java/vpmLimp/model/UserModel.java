@@ -50,7 +50,7 @@ public class UserModel implements UserDetails {
     @Column(name = "cpf", unique = true, length = 11)
     private String cpf;
 
-    @Enumerated(EnumType.STRING)  // Persistir o enum como string
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role;
 

@@ -1,14 +1,9 @@
 package vpmLimp.DTO;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+public record JwtAuthResponse(String token) {
 
-@Data
-@AllArgsConstructor
-public class JwtAuthResponse {
 
-    private  String token;
 
 
 }

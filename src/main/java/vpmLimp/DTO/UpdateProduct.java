@@ -1,17 +1,7 @@
 package vpmLimp.DTO;
 
-import lombok.Value;
-
-@Value
-public class UpdateProduct {
-
-    private String name;
-
-
-    private String description;
-
-
-    private Double price;
-
-
-}
+public record UpdateProduct(
+        String name,
+        String description,
+        Double price
+) {}

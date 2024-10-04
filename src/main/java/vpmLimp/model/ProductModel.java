@@ -28,6 +28,7 @@ public class ProductModel {
     private Double price;
 
     /*
+    TODO: Implementar Imagem - Foto do produto
     @Lob
     @Column(name = "image" )
     private byte[] image;
