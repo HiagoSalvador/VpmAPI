@@ -50,6 +50,9 @@ public class UserModel implements UserDetails {
     @Column(name = "cpf", unique = true, length = 11)
     private String cpf;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CommentModel> comments;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role;

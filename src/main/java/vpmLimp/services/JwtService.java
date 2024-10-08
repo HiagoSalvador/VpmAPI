@@ -18,7 +18,7 @@ import java.util.function.Function;
 
 
 @Service
-public class JwtServices {
+public class JwtService {
 
     @Value("${token.signing.key}")
     private String jwtSigningKey;

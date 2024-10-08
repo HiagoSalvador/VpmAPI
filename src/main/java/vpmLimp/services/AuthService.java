@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AuthService {
 
-    private final JwtServices jwtServices;
+    private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserModelRepository userModelRepository;
     private final PasswordEncoder passwordEncoder;
@@ -29,7 +29,7 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(request.email(), request.password()));
         var user = userModelRepository.findByEmail(request.email())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
-        var jwt = jwtServices.generateToken(user);
+        var jwt = jwtService.generateToken(user);
         return new JwtAuthResponse(jwt);
     }
 
