@@ -1,6 +1,7 @@
 package vpmLimp.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import vpmLimp.model.enums.UserRole;
 import java.util.Collection;
 import java.util.List;
+
 
 
 @Entity
@@ -41,13 +43,16 @@ public class UserModel implements UserDetails {
     @Column(name = "state",  nullable = false)
     private String state;
 
-    @Column(name = "zip_code",  nullable = false)
+    @Column(name = "zip_code", nullable = false)
+    @Pattern(regexp = "\\d{5}-\\d{3}", message = "CEP deve estar no formato 12345-678")
     private String zipCode;
 
     @Column(name = "phone", unique = true)
+    @Pattern(regexp = "\\(\\d{2}\\) \\d{5}-\\d{4}", message = "Telefone deve estar no formato (XX) XXXXX-XXXX")
     private String phone;
 
-    @Column(name = "cpf", unique = true, length = 11)
+    @Column(name = "cpf", unique = true)
+    @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}", message = "CPF deve estar no formato 123.456.789-10")
     private String cpf;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
