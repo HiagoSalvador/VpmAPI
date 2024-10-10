@@ -62,6 +62,9 @@ public class UserModel implements UserDetails {
     @Column(name = "role", nullable = false)
     private UserRole role;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<EvaluationModel> evaluations;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.role == UserRole.ADMIN) {

@@ -35,7 +35,6 @@ public class CommentService {
                 .orElseThrow(() -> new RuntimeException("Comentário não encontrado"));
 
         existingComment.setCommentText(newCommentText);
-
         return commentModelRepository.save(existingComment);
     }
 

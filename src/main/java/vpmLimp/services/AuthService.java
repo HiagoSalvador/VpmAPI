@@ -11,6 +11,7 @@ import vpmLimp.model.UserModel;
 import vpmLimp.model.enums.UserRole;
 import vpmLimp.repositories.UserModelRepository;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -34,8 +35,10 @@ public class AuthService {
     }
 
     public UserResponse signUp(SignUp signUp) {
-        UserRole role = (signUp.role() != null && !signUp.role().isEmpty()) ?
-                UserRole.valueOf(signUp.role()) : UserRole.USER;
+        UserRole role = Optional.ofNullable(signUp.role())
+                .filter(r -> !r.isEmpty())
+                .map(UserRole::valueOf)
+                .orElse(UserRole.USER);
 
         UserModel user = UserModel.builder()
                 .name(signUp.name())

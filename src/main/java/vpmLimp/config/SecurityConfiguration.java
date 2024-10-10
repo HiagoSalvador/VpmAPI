@@ -46,6 +46,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN")
                         .requestMatchers("/comments/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/user/{id}").authenticated()
+                        .requestMatchers("/evaluations/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

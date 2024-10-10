@@ -64,7 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String requestURI = request.getRequestURI();
         if (requestURI.matches("/auth/user/\\d+")) {
-            String userIdFromPath = requestURI.split("/")[3]; . 
+            String userIdFromPath = requestURI.split("/")[3];
 
 
             UserModel authenticatedUser = (UserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
