@@ -47,6 +47,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/comments/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/user/{id}").authenticated()
                         .requestMatchers("/evaluations/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/order/create").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/orders/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -54,6 +56,7 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

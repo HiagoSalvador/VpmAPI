@@ -1,43 +1,38 @@
 package vpmLimp.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import vpmLimp.DTO.EvaluationRequest;
 import vpmLimp.DTO.EvaluationResponse;
+import vpmLimp.model.UserModel;
 import vpmLimp.services.EvaluationService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/evaluations")
+@AllArgsConstructor
 public class EvaluationController {
 
-
-    @Autowired
-    private EvaluationService evaluationService;
+    private final EvaluationService evaluationService;
 
     @PostMapping
-    public ResponseEntity<EvaluationResponse> createEvaluation(@RequestBody EvaluationRequest request) {
-        EvaluationResponse newEvaluation = evaluationService.createEvaluation(request);
+    public ResponseEntity<EvaluationResponse> createEvaluation(@RequestBody EvaluationRequest request, @AuthenticationPrincipal UserModel user) {
+        EvaluationResponse newEvaluation = evaluationService.createEvaluation(request, user);
         return ResponseEntity.ok(newEvaluation);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EvaluationResponse> updateEvaluation(@PathVariable Long id, @RequestBody EvaluationRequest request) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        return ResponseEntity.ok(evaluationService.updateEvaluation(id, request, email));
+    public ResponseEntity<EvaluationResponse> updateEvaluation(@PathVariable Long id, @RequestBody EvaluationRequest request, @AuthenticationPrincipal UserModel user) {
+        EvaluationResponse updatedEvaluation = evaluationService.updateEvaluation(id, request, user);
+        return ResponseEntity.ok(updatedEvaluation);
     }
 
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEvaluation(@PathVariable Long id) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        evaluationService.deleteEvaluation(id, email);
+    public ResponseEntity<Void> deleteEvaluation(@PathVariable Long id, @AuthenticationPrincipal UserModel user) {
+        evaluationService.deleteEvaluation(id, user);
         return ResponseEntity.noContent().build();
     }
 

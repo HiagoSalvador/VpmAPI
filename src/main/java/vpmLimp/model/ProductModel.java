@@ -3,6 +3,8 @@ package vpmLimp.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "product")
 @NoArgsConstructor
@@ -26,6 +28,9 @@ public class ProductModel {
 
     @Column(name = "price", nullable = false)
     private Double price;
+
+    @ManyToMany(mappedBy = "products")
+    private List<OrderModel> orders;
 
     /*
     TODO: Implementar Imagem - Foto do produto
