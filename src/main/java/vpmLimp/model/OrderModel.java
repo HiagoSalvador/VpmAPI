@@ -36,4 +36,9 @@ public class OrderModel {
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     private List<ProductModel> products;
+
+    @Column(name = "total_amount")
+    private Double totalAmount;
+
+
 }

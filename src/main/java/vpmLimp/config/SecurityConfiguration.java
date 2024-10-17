@@ -48,12 +48,17 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/user/{id}").authenticated()
                         .requestMatchers("/evaluations/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/order/create").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/orders/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/order/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/order/delete/{orderId}").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling.authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                );
+
         return http.build();
     }
 

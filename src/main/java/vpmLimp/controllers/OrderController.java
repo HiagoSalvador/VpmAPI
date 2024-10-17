@@ -20,14 +20,20 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping("/create")
-    public ResponseEntity<List<String>> createOrder(@RequestBody OrderRequest orderRequest) {
-        List<String> productNames = orderService.createOrder(orderRequest.productIds());
-        return ResponseEntity.ok(productNames);
+    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest) {
+        OrderResponse orderResponse = orderService.createOrder(orderRequest);
+        return ResponseEntity.ok(orderResponse);
     }
 
     @GetMapping("/user")
     public ResponseEntity<List<OrderResponse>> getUserOrders(@AuthenticationPrincipal UserModel user) {
         List<OrderResponse> orderResponses = orderService.getUserOrders(user.getId());
         return ResponseEntity.ok(orderResponses);
+    }
+
+    @DeleteMapping("/delete/{orderId}")
+    public ResponseEntity<String> cancelOrder(@PathVariable Long orderId) {
+        orderService.cancelOrder(orderId);
+        return ResponseEntity.ok("Order canceled successfully.");
     }
 }

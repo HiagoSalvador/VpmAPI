@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class EvaluationService {
 
     private final EvaluationModelRepository evaluationRepository;
-    private final UserModelRepository userRepository;
+
 
     public EvaluationResponse createEvaluation(EvaluationRequest request, UserModel user) {
         EvaluationModel evaluation = buildEvaluationFromRequest(request, user);

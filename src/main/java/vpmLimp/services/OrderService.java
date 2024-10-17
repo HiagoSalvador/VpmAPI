@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import vpmLimp.DTO.OrderRequest;
 import vpmLimp.DTO.OrderResponse;
 import vpmLimp.model.OrderModel;
 import vpmLimp.model.ProductModel;
@@ -28,17 +29,38 @@ public class OrderService {
     @Autowired
     private ProductModelRepository productRepository;
 
-    public List<String> createOrder(List<Long> productIds) {
+    public OrderResponse createOrder(OrderRequest orderRequest) {
         UserModel user = getAuthenticatedUser();
-        List<ProductModel> products = productRepository.findAllById(productIds);
+
+        List<ProductModel> products = orderRequest.productOrders().stream()
+                .map(productOrder -> {
+                    ProductModel product = productRepository.findById(productOrder.productId())
+                            .orElseThrow(() -> new RuntimeException("Product not found: " + productOrder.productId()));
+
+                    if (product.getQuantity() < productOrder.quantity()) {
+                        throw new RuntimeException("Insufficient quantity for product: " + product.getName());
+                    }
+                    product.setQuantity(product.getQuantity() - productOrder.quantity());
+                    return product;
+                })
+                .collect(Collectors.toList());
+
+        double totalAmount = orderRequest.productOrders().stream()
+                .mapToDouble(productOrder -> {
+                    ProductModel product = productRepository.findById(productOrder.productId())
+                            .orElseThrow(() -> new RuntimeException("Product not found: " + productOrder.productId()));
+                    return product.getPrice() * productOrder.quantity();
+                })
+                .sum();
+
         OrderModel order = new OrderModel();
         order.setUser(user);
         order.setProducts(products);
         order.setStatus(OrderStatus.PENDING);
+        order.setTotalAmount(totalAmount);
         orderRepository.save(order);
-        return products.stream()
-                .map(ProductModel::getName)
-                .collect(Collectors.toList());
+
+        return convertToOrderResponse(order);
     }
 
     public List<OrderResponse> getUserOrders(Long userId) {
@@ -52,13 +74,13 @@ public class OrderService {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String authenticatedEmail = userDetails.getUsername();
         return userRepository.findByEmail(authenticatedEmail)
-                .orElseThrow(() -> new RuntimeException("User autenticated not found"));
+                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
     }
 
     private OrderResponse convertToOrderResponse(OrderModel order) {
         return new OrderResponse(
                 order.getId(),
-                order.getStatus(),
+                order.getStatus().name(),
                 order.getUser().getAddress(),
                 order.getUser().getCity(),
                 order.getProducts().stream()
@@ -66,9 +88,28 @@ public class OrderService {
                                 product.getId(),
                                 product.getName(),
                                 product.getDescription(),
-                                product.getPrice()
+                                product.getPrice(),
+                                product.getQuantity()
                         ))
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()),
+                order.getTotalAmount()
         );
     }
+
+    public void cancelOrder(Long orderId) {
+        UserModel authenticatedUser = getAuthenticatedUser();
+        OrderModel order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        if (!order.getUser().getEmail().equals(authenticatedUser.getEmail())) {
+            throw new RuntimeException("You are not authorized to cancel this order.");
+        }
+
+        order.setStatus(OrderStatus.CANCELED);
+        orderRepository.save(order);
+    }
+
+
+
+
 }

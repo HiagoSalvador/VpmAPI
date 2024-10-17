@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import vpmLimp.DTO.ProductRequest;
 import vpmLimp.DTO.ProductResponse;
 import vpmLimp.DTO.UpdateProduct;
+import vpmLimp.DTO.UpdateProductQuantity;
 import vpmLimp.model.ProductModel;
 import vpmLimp.repositories.ProductModelRepository;
 
@@ -30,18 +31,46 @@ public class ProductService {
                 savedProduct.getId(),
                 savedProduct.getName(),
                 savedProduct.getDescription(),
-                savedProduct.getPrice()
+                savedProduct.getPrice(),
+                savedProduct.getQuantity()
         );
     }
 
-    public ProductResponse updateProduct(UpdateProduct updateProduct, Long id){
-        ProductModel product = productModelRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product not exists "));
+    public ProductResponse updateProduct(UpdateProduct updateProduct, Long id) {
+        ProductModel product = productModelRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Product not exists "));
+
         product.setName(updateProduct.name());
         product.setPrice(updateProduct.price());
         product.setDescription(updateProduct.description());
+        product.setQuantity(updateProduct.quantity());
 
-        return new ProductResponse(productModelRepository.save(product));
+        ProductModel updatedProduct = productModelRepository.save(product);
 
+        return new ProductResponse(
+                updatedProduct.getId(),
+                updatedProduct.getName(),
+                updatedProduct.getDescription(),
+                updatedProduct.getPrice(),
+                updatedProduct.getQuantity()
+        );
+    }
+
+    public ProductResponse updateProductQuantity(Long id, UpdateProductQuantity updateProductQuantity) {
+        ProductModel product = productModelRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Product not exists"));
+
+        product.setQuantity(updateProductQuantity.quantity());
+
+        ProductModel updatedProduct = productModelRepository.save(product);
+
+        return new ProductResponse(
+                updatedProduct.getId(),
+                updatedProduct.getName(),
+                updatedProduct.getDescription(),
+                updatedProduct.getPrice(),
+                updatedProduct.getQuantity()
+        );
     }
 
     public void deleteProduct(Long id){

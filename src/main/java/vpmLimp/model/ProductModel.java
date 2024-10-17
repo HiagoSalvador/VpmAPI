@@ -32,6 +32,10 @@ public class ProductModel {
     @ManyToMany(mappedBy = "products")
     private List<OrderModel> orders;
 
+
+    @Column(name = "quantity", nullable = false)
+    private int quantity;
+
     /*
     TODO: Implementar Imagem - Foto do produto
     @Lob

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import vpmLimp.DTO.ProductRequest;
 import vpmLimp.DTO.ProductResponse;
 import vpmLimp.DTO.UpdateProduct;
+import vpmLimp.DTO.UpdateProductQuantity;
 import vpmLimp.services.ProductService;
 import java.util.List;
 
@@ -29,6 +30,12 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id, @RequestBody UpdateProduct updateProduct) {
         return ResponseEntity.ok().body(productService.updateProduct(updateProduct, id));
+    }
+
+    @PutMapping("/quantity/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ProductResponse> updateProductQuantity(@PathVariable Long id, @RequestBody UpdateProductQuantity updateProductQuantity) {
+        return ResponseEntity.ok().body(productService.updateProductQuantity(id, updateProductQuantity));
     }
 
     @DeleteMapping("/{id}")
