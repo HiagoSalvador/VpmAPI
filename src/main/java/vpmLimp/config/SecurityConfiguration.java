@@ -50,6 +50,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/order/create").authenticated()
                         .requestMatchers(HttpMethod.GET, "/order/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/order/delete/{orderId}").authenticated()
+                        .requestMatchers("/cart/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
