@@ -87,5 +87,12 @@ public class ProductService {
                 .map(ProductResponse::new)
                 .collect(Collectors.toList());
     }
+
+    public List<ProductResponse> searchProductsByName(String name) {
+        List<ProductModel> products = productModelRepository.findByNameContainingIgnoreCase(name);
+        return products.stream()
+                .map(ProductResponse::new)
+                .collect(Collectors.toList());
+    }
     }
 

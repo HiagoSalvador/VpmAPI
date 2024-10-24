@@ -43,7 +43,6 @@ public class CartService {
         for (CartRequest cartRequest : cartRequests) {
             ProductModel product = findProductById(cartRequest.productId());
 
-
             if (product.getQuantity() < cartRequest.quantity()) {
                 throw new IllegalArgumentException("Insufficient stock for product " + product.getName());
             }
@@ -62,17 +61,21 @@ public class CartService {
 
         cartRepository.save(cart);
 
-
-        BigDecimal totalPrice = calculateTotalPrice(cart.getProducts());
-
+        BigDecimal totalCartPrice = BigDecimal.ZERO;
 
         for (ProductModel product : cart.getProducts()) {
-            responses.add(new CartResponse(product.getId(), product.getQuantity(), totalPrice));
+            BigDecimal productTotalPrice = BigDecimal.valueOf(product.getPrice())
+                    .multiply(BigDecimal.valueOf(product.getQuantity()))
+                    .setScale(2, RoundingMode.HALF_UP);
+
+            totalCartPrice = totalCartPrice.add(productTotalPrice);
+
+            responses.add(new CartResponse(product.getId(), product.getQuantity(), productTotalPrice));
         }
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("products", responses);
-        result.put("totalPrice", totalPrice.setScale(2, RoundingMode.HALF_UP));
+        result.put("totalPrice", totalCartPrice.setScale(2, RoundingMode.HALF_UP));
 
         return result;
     }
@@ -136,4 +139,33 @@ public class CartService {
         return productModelRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
     }
+
+    public Map<String, Object> getCart() {
+        CartModel cart = (CartModel) httpSession.getAttribute("cart");
+
+        if (cart == null || cart.getProducts() == null || cart.getProducts().isEmpty()) {
+            throw new RuntimeException("No products found in the cart for the current session.");
+        }
+
+        List<CartResponse> responses = new ArrayList<>();
+        BigDecimal totalCartPrice = BigDecimal.ZERO;
+
+        for (ProductModel product : cart.getProducts()) {
+            BigDecimal productTotalPrice = BigDecimal.valueOf(product.getPrice())
+                    .multiply(BigDecimal.valueOf(product.getQuantity()))
+                    .setScale(2, RoundingMode.HALF_UP);
+
+            totalCartPrice = totalCartPrice.add(productTotalPrice);
+
+
+            responses.add(new CartResponse(product.getId(), product.getQuantity(), productTotalPrice));
+        }
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("products", responses);
+        result.put("totalPrice", totalCartPrice.setScale(2, RoundingMode.HALF_UP));
+
+        return result;
+    }
+
 }

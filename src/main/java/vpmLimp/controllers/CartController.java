@@ -34,4 +34,15 @@ public class CartController {
         cartService.removeProductsFromCart(productIdsToRemove);
         return ResponseEntity.noContent().build();
     }
+
+
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getCart() {
+        try {
+            Map<String, Object> cart = cartService.getCart();
+            return ResponseEntity.ok(cart);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 }
