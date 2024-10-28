@@ -7,6 +7,7 @@ import vpmLimp.DTO.ProductResponse;
 import vpmLimp.DTO.UpdateProduct;
 import vpmLimp.DTO.UpdateProductQuantity;
 import vpmLimp.model.ProductModel;
+import vpmLimp.model.enums.CategoryProduct;
 import vpmLimp.repositories.ProductModelRepository;
 
 import java.util.List;
@@ -24,6 +25,13 @@ public class ProductService {
         product.setName(productRequest.name());
         product.setDescription(productRequest.description());
         product.setPrice(productRequest.price());
+        product.setQuantity(productRequest.quantity());
+
+        if (productRequest.category() == null) {
+            product.setCategoryProduct(CategoryProduct.CASA);
+        } else {
+            product.setCategoryProduct(productRequest.category());
+        }
 
         ProductModel savedProduct = productModelRepository.save(product);
 
@@ -32,9 +40,11 @@ public class ProductService {
                 savedProduct.getName(),
                 savedProduct.getDescription(),
                 savedProduct.getPrice(),
-                savedProduct.getQuantity()
+                savedProduct.getQuantity(),
+                savedProduct.getCategoryProduct()
         );
     }
+
 
     public ProductResponse updateProduct(UpdateProduct updateProduct, Long id) {
         ProductModel product = productModelRepository.findById(id)
@@ -52,7 +62,8 @@ public class ProductService {
                 updatedProduct.getName(),
                 updatedProduct.getDescription(),
                 updatedProduct.getPrice(),
-                updatedProduct.getQuantity()
+                updatedProduct.getQuantity(),
+                updatedProduct.getCategoryProduct()
         );
     }
 
@@ -69,7 +80,9 @@ public class ProductService {
                 updatedProduct.getName(),
                 updatedProduct.getDescription(),
                 updatedProduct.getPrice(),
-                updatedProduct.getQuantity()
+                updatedProduct.getQuantity(),
+                updatedProduct.getCategoryProduct()
+
         );
     }
 

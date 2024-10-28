@@ -27,9 +27,9 @@ public class AuthService {
 
     public JwtAuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.password()));
-        var user = userModelRepository.findByEmail(request.email())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
+                new UsernamePasswordAuthenticationToken(request.cpf(), request.password()));
+        var user = userModelRepository.findByCpf(request.cpf())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid CPF or password."));
         var jwt = jwtService.generateToken(user);
         return new JwtAuthResponse(jwt);
     }

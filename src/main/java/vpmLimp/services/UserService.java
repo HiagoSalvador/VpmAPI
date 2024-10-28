@@ -18,7 +18,8 @@ public class UserService {
 
     @Transactional
     public UserDetailsService userDetailsService() {
-        return username -> userModelRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found with email -" + username));
+        return cpf -> userModelRepository.findByCpf(cpf)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with CPF - " + cpf));
     }
 
 

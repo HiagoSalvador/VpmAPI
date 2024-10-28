@@ -2,6 +2,7 @@ package vpmLimp.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import vpmLimp.model.enums.CategoryProduct;
 
 import java.util.List;
 
@@ -35,6 +36,10 @@ public class ProductModel {
 
     @Column(name = "quantity", nullable = false)
     private int quantity;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "categoryProduct", nullable = false, length = 50)
+    private CategoryProduct categoryProduct;
 
     /*
     TODO: Implementar Imagem - Foto do produto

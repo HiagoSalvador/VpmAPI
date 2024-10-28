@@ -29,6 +29,8 @@ public class UserModel implements UserDetails {
     private String name;
 
     @Column(name = "email", nullable = false, unique = true)
+    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$",
+            message = "Email deve estar em um formato válido")
     private String email;
 
     @Column(name = "password", nullable = false)
@@ -85,7 +87,7 @@ public class UserModel implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.email;
+        return this.cpf;
     }
 
     @Override
