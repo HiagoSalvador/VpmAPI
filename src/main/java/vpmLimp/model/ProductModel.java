@@ -41,13 +41,8 @@ public class ProductModel {
     @Column(name = "categoryProduct", nullable = false, length = 50)
     private CategoryProduct categoryProduct;
 
-    /*
-    TODO: Implementar Imagem - Foto do produto
-    @Lob
-    @Column(name = "image" )
-    private byte[] image;
-     */
-
+    @Column(name = "image_url", length = 255)
+    private String imageUrl;
 
 
 

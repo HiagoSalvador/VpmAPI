@@ -10,9 +10,7 @@ import vpmLimp.model.CommentModel;
 import vpmLimp.model.UserModel;
 import vpmLimp.services.CommentService;
 import vpmLimp.services.UserService;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/comments")
@@ -20,7 +18,6 @@ import java.util.stream.Collectors;
 public class CommentController {
 
     private final CommentService commentService;
-    private final UserService userService;
 
     @PostMapping("")
     public ResponseEntity<CommentResponse> createComment(@RequestBody CommentRequest request, @AuthenticationPrincipal UserModel user) {

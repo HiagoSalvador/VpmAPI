@@ -30,4 +30,5 @@ public class EvaluationModel {
     @JoinColumn(name = "user_id", nullable = false)
     private UserModel user;
 
+
 }

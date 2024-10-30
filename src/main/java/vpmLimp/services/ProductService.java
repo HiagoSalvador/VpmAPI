@@ -26,6 +26,7 @@ public class ProductService {
         product.setDescription(productRequest.description());
         product.setPrice(productRequest.price());
         product.setQuantity(productRequest.quantity());
+        product.setImageUrl(productRequest.imageUrl());
 
         if (productRequest.category() == null) {
             product.setCategoryProduct(CategoryProduct.CASA);
@@ -41,7 +42,8 @@ public class ProductService {
                 savedProduct.getDescription(),
                 savedProduct.getPrice(),
                 savedProduct.getQuantity(),
-                savedProduct.getCategoryProduct()
+                savedProduct.getCategoryProduct(),
+                savedProduct.getImageUrl()
         );
     }
 
@@ -63,7 +65,8 @@ public class ProductService {
                 updatedProduct.getDescription(),
                 updatedProduct.getPrice(),
                 updatedProduct.getQuantity(),
-                updatedProduct.getCategoryProduct()
+                updatedProduct.getCategoryProduct(),
+                updatedProduct.getImageUrl()
         );
     }
 

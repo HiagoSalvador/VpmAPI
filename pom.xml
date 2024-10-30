@@ -3,34 +3,28 @@
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Spring Boot Parent -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
+	<!-- Project Metadata -->
 	<groupId>br.com.vpm</groupId>
 	<artifactId>vpm-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>vpm-api</name>
 	<description>vpm-api</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+
+	<!-- Java Version -->
 	<properties>
 		<java.version>21</java.version>
 	</properties>
 
+	<!-- Dependencies -->
 	<dependencies>
 		<!-- Spring Boot Dependencies -->
 		<dependency>
@@ -89,39 +83,35 @@
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
+			<version>0.11.5</version>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
+			<version>0.11.5</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
+			<version>0.11.5</version>
 			<scope>runtime</scope>
+		</dependency>
+
+		<!-- ZXing for QR Code generation -->
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+			<version>3.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>javase</artifactId>
+			<version>3.4.1</version>
 		</dependency>
 	</dependencies>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>io.jsonwebtoken</groupId>
-				<artifactId>jjwt-api</artifactId>
-				<version>0.11.5</version>
-			</dependency>
-			<dependency>
-				<groupId>io.jsonwebtoken</groupId>
-				<artifactId>jjwt-impl</artifactId>
-				<version>0.11.5</version>
-			</dependency>
-			<dependency>
-				<groupId>io.jsonwebtoken</groupId>
-				<artifactId>jjwt-jackson</artifactId>
-				<version>0.11.5</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
+	<!-- Build Configuration -->
 	<build>
 		<plugins>
 			<plugin>
