@@ -33,7 +33,6 @@ public class QRCodeController {
             // TODO: Ajustar para integração real no futuro
             byte[] qrCodeImage = qrCodeService.generateQRCode(String.valueOf(value), 250, 250);
             return ResponseEntity.ok()
-                    ga
                     .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"qrcode.png\"")
                     .contentType(MediaType.IMAGE_PNG)
                     .body(qrCodeImage);
