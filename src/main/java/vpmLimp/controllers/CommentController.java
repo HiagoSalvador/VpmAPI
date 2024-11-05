@@ -9,7 +9,6 @@ import vpmLimp.DTO.CommentRequest;
 import vpmLimp.model.CommentModel;
 import vpmLimp.model.UserModel;
 import vpmLimp.services.CommentService;
-import vpmLimp.services.UserService;
 import java.util.List;
 
 @RestController
@@ -33,15 +32,23 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CommentResponse> updateComment(@PathVariable Long id, @RequestBody CommentRequest request) {
-        CommentModel updatedComment = commentService.updateComment(id, request.commentText());
+    public ResponseEntity<CommentResponse> updateComment(@PathVariable Long id,
+                                                         @RequestBody CommentRequest request,
+                                                         @AuthenticationPrincipal UserModel user) {
+        CommentModel existingComment = commentService.getCommentById(id); // Método para buscar o comentário
+        commentService.validateOwnership(existingComment, user); // Valida a propriedade
+
+        CommentModel updatedComment = commentService.updateComment(id, request.commentText(), user);
         CommentResponse commentResponse = new CommentResponse(updatedComment.getId(), updatedComment.getCommentText());
         return ResponseEntity.ok(commentResponse);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
-        commentService.deleteComment(id);
+    public ResponseEntity<Void> deleteComment(@PathVariable Long id, @AuthenticationPrincipal UserModel user) {
+        CommentModel existingComment = commentService.getCommentById(id);
+        commentService.validateOwnership(existingComment, user); // Valida a propriedade
+
+        commentService.deleteComment(id, user);
         return ResponseEntity.noContent().build();
     }
 }

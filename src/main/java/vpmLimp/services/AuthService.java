@@ -10,6 +10,8 @@ import vpmLimp.DTO.*;
 import vpmLimp.model.UserModel;
 import vpmLimp.model.enums.UserRole;
 import vpmLimp.repositories.UserModelRepository;
+import vpmLimp.validations.UserValidation;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserModelRepository userModelRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserValidation userValidation;
 
 
     public JwtAuthResponse login(LoginRequest request) {
@@ -35,6 +38,7 @@ public class AuthService {
     }
 
     public UserResponse signUp(SignUp signUp) {
+        userValidation.validateSignUp(signUp);
         UserRole role = Optional.ofNullable(signUp.role())
                 .filter(r -> !r.isEmpty())
                 .map(UserRole::valueOf)

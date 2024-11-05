@@ -11,6 +11,8 @@ import vpmLimp.model.ProductModel;
 import vpmLimp.repositories.CartModelRepository;
 import vpmLimp.repositories.ProductModelRepository;
 
+import vpmLimp.validations.CartValidation;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -28,8 +30,16 @@ public class CartService {
     @Autowired
     private HttpSession httpSession;
 
+    private final CartValidation cartValidation;
+
+    @Autowired
+    public CartService(ProductModelRepository productModelRepository) {
+        this.productModelRepository = productModelRepository;
+        this.cartValidation = new CartValidation(productModelRepository);
+    }
+
     public Map<String, Object> addProductsToCart(List<CartRequest> cartRequests) {
-        validateCartRequests(cartRequests);
+        cartValidation.validateCartRequests(cartRequests);
 
         CartModel cart = (CartModel) httpSession.getAttribute("cart");
         if (cart == null) {
@@ -61,14 +71,12 @@ public class CartService {
 
         cartRepository.save(cart);
 
-        BigDecimal totalCartPrice = BigDecimal.ZERO;
+        BigDecimal totalCartPrice = calculateTotalPrice(cart.getProducts());
 
         for (ProductModel product : cart.getProducts()) {
             BigDecimal productTotalPrice = BigDecimal.valueOf(product.getPrice())
                     .multiply(BigDecimal.valueOf(product.getQuantity()))
                     .setScale(2, RoundingMode.HALF_UP);
-
-            totalCartPrice = totalCartPrice.add(productTotalPrice);
 
             responses.add(new CartResponse(product.getId(), product.getQuantity(), productTotalPrice));
         }
@@ -120,21 +128,6 @@ public class CartService {
                 .setScale(2, RoundingMode.HALF_UP);
     }
 
-    private void validateCartRequests(List<CartRequest> cartRequests) {
-        if (cartRequests == null || cartRequests.isEmpty()) {
-            throw new IllegalArgumentException("The list of products for the cart cannot be empty.");
-        }
-
-        cartRequests.forEach(cartRequest -> {
-            if (cartRequest.productId() == null) {
-                throw new IllegalArgumentException("Product not reconheced.");
-            }
-            if (cartRequest.quantity() <= 0) {
-                throw new IllegalArgumentException("Product quantity must be greater than zero.");
-            }
-        });
-    }
-
     private ProductModel findProductById(Long productId) {
         return productModelRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
@@ -157,7 +150,6 @@ public class CartService {
 
             totalCartPrice = totalCartPrice.add(productTotalPrice);
 
-
             responses.add(new CartResponse(product.getId(), product.getQuantity(), productTotalPrice));
         }
 
@@ -167,5 +159,4 @@ public class CartService {
 
         return result;
     }
-
 }
