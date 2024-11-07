@@ -6,6 +6,8 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import org.springframework.stereotype.Service;
+import vpmLimp.validations.QRCodeValidation;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -24,6 +26,8 @@ public class QRCodeService {
      * @throws IOException     Se ocorrer um erro de E/S ao escrever a imagem.
      */
     public byte[] generateQRCode(String text, int width, int height) throws WriterException, IOException {
+        QRCodeValidation.validateQRCodeParameters(text, width, height);
+
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
 

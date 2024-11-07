@@ -9,6 +9,7 @@ import vpmLimp.DTO.UpdateProductQuantity;
 import vpmLimp.model.ProductModel;
 import vpmLimp.model.enums.CategoryProduct;
 import vpmLimp.repositories.ProductModelRepository;
+import vpmLimp.validations.ProductValidation;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -20,7 +21,12 @@ public class ProductService {
     @Autowired
     private ProductModelRepository productModelRepository;
 
+    @Autowired
+    private ProductValidation productValidation;
+
     public ProductResponse create(ProductRequest productRequest) {
+        productValidation.validateProductRequest(productRequest);
+
         ProductModel product = new ProductModel();
         product.setName(productRequest.name());
         product.setDescription(productRequest.description());
@@ -47,10 +53,9 @@ public class ProductService {
         );
     }
 
-
     public ProductResponse updateProduct(UpdateProduct updateProduct, Long id) {
         ProductModel product = productModelRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product not exists "));
+                .orElseThrow(() -> new IllegalArgumentException("Product not exists"));
 
         product.setName(updateProduct.name());
         product.setPrice(updateProduct.price());
@@ -71,6 +76,8 @@ public class ProductService {
     }
 
     public ProductResponse updateProductQuantity(Long id, UpdateProductQuantity updateProductQuantity) {
+        productValidation.validateProductUpdateQuantity(updateProductQuantity.quantity());
+
         ProductModel product = productModelRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Product not exists"));
 
@@ -85,21 +92,19 @@ public class ProductService {
                 updatedProduct.getPrice(),
                 updatedProduct.getQuantity(),
                 updatedProduct.getCategoryProduct()
-
         );
     }
 
-    public void deleteProduct(Long id){
-        if(!productModelRepository.existsById(id)){
+    public void deleteProduct(Long id) {
+        if (!productModelRepository.existsById(id)) {
             throw new NoSuchElementException("Product not exists");
         }
-
         productModelRepository.deleteById(id);
     }
 
-    public List<ProductResponse> getAllProducts(){
-        List<ProductModel> users = productModelRepository.findAll();
-        return users.stream()
+    public List<ProductResponse> getAllProducts() {
+        List<ProductModel> products = productModelRepository.findAll();
+        return products.stream()
                 .map(ProductResponse::new)
                 .collect(Collectors.toList());
     }
@@ -110,5 +115,4 @@ public class ProductService {
                 .map(ProductResponse::new)
                 .collect(Collectors.toList());
     }
-    }
-
+}

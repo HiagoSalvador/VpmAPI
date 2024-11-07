@@ -1,7 +1,6 @@
 package vpmLimp.services;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vpmLimp.DTO.EvaluationRequest;
 import vpmLimp.DTO.EvaluationResponse;
@@ -9,10 +8,9 @@ import vpmLimp.DTO.UserResponse;
 import vpmLimp.model.EvaluationModel;
 import vpmLimp.model.UserModel;
 import vpmLimp.repositories.EvaluationModelRepository;
-import vpmLimp.repositories.UserModelRepository;
+import vpmLimp.validations.EvaluationValidation;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,15 +18,19 @@ import java.util.stream.Collectors;
 public class EvaluationService {
 
     private final EvaluationModelRepository evaluationRepository;
-
+    private final EvaluationValidation evaluationValidation;
 
     public EvaluationResponse createEvaluation(EvaluationRequest request, UserModel user) {
+        evaluationValidation.validateEvaluationRequest(request);
+
         EvaluationModel evaluation = buildEvaluationFromRequest(request, user);
         EvaluationModel createdEvaluation = evaluationRepository.save(evaluation);
         return buildEvaluationResponse(createdEvaluation, user);
     }
 
     public EvaluationResponse updateEvaluation(Long id, EvaluationRequest request, UserModel user) {
+        evaluationValidation.validateEvaluationRequest(request);
+
         EvaluationModel evaluation = findEvaluationById(id);
         verifyUserPermission(evaluation, user);
 

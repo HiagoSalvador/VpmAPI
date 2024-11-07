@@ -34,11 +34,6 @@ public class CartValidation {
 
             ProductModel product = productModelRepository.findById(cartRequest.productId())
                     .orElseThrow(() -> new IllegalArgumentException("Product not found"));
-
-
-            if (product.getQuantity() < cartRequest.quantity()) {
-                throw new IllegalArgumentException("Insufficient stock for product " + product.getName());
-            }
         }
     }
 }

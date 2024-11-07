@@ -53,10 +53,8 @@ public class CartService {
         for (CartRequest cartRequest : cartRequests) {
             ProductModel product = findProductById(cartRequest.productId());
 
-            if (product.getQuantity() < cartRequest.quantity()) {
-                throw new IllegalArgumentException("Insufficient stock for product " + product.getName());
-            }
-
+            // Removido o bloqueio do estoque insuficiente
+            // Verifica se o produto já existe no carrinho
             Optional<ProductModel> existingProduct = cart.getProducts().stream()
                     .filter(p -> p.getId().equals(product.getId()))
                     .findFirst();
@@ -64,6 +62,7 @@ public class CartService {
             if (existingProduct.isPresent()) {
                 existingProduct.get().setQuantity(existingProduct.get().getQuantity() + cartRequest.quantity());
             } else {
+                // Adiciona o produto com a quantidade solicitada
                 product.setQuantity(cartRequest.quantity());
                 cart.getProducts().add(product);
             }
@@ -87,6 +86,7 @@ public class CartService {
 
         return result;
     }
+
 
     public void removeProductsFromCart(List<Long> productIdsToRemove) {
         if (productIdsToRemove == null || productIdsToRemove.isEmpty()) {

@@ -13,6 +13,7 @@ import vpmLimp.model.enums.OrderStatus;
 import vpmLimp.repositories.OrderModelRepository;
 import vpmLimp.repositories.ProductModelRepository;
 import vpmLimp.repositories.UserModelRepository;
+import vpmLimp.validations.OrderValidation;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +30,12 @@ public class OrderService {
     @Autowired
     private ProductModelRepository productRepository;
 
+    @Autowired
+    private OrderValidation orderValidation;
+
     public OrderResponse createOrder(OrderRequest orderRequest) {
+        orderValidation.validateOrderRequest(orderRequest);
+
         UserModel user = getAuthenticatedUser();
 
         List<ProductModel> products = orderRequest.productOrders().stream()
@@ -37,20 +43,21 @@ public class OrderService {
                     ProductModel product = productRepository.findById(productOrder.productId())
                             .orElseThrow(() -> new RuntimeException("Product not found: " + productOrder.productId()));
 
-                    if (product.getQuantity() < productOrder.quantity()) {
-                        throw new RuntimeException("Insufficient quantity for product: " + product.getName());
-                    }
+                    orderValidation.validateProductStock(product, productOrder.quantity());
+
                     product.setQuantity(product.getQuantity() - productOrder.quantity());
                     return product;
                 })
                 .collect(Collectors.toList());
 
-        double totalAmount = orderRequest.productOrders().stream()
-                .mapToDouble(productOrder -> {
-                    ProductModel product = productRepository.findById(productOrder.productId())
-                            .orElseThrow(() -> new RuntimeException("Product not found: " + productOrder.productId()));
-                    return product.getPrice() * productOrder.quantity();
-                })
+        double totalAmount = products.stream()
+                .mapToDouble(product -> product.getPrice() *
+                        orderRequest.productOrders().stream()
+                                .filter(p -> p.productId().equals(product.getId()))
+                                .findFirst()
+                                .orElseThrow()
+                                .quantity()
+                )
                 .sum();
 
         OrderModel order = new OrderModel();
@@ -70,10 +77,23 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
+    public void cancelOrder(Long orderId) {
+        UserModel authenticatedUser = getAuthenticatedUser();
+        OrderModel order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        if (!order.getUser().getEmail().equals(authenticatedUser.getEmail())) {
+            throw new RuntimeException("You are not authorized to cancel this order.");
+        }
+
+        order.setStatus(OrderStatus.CANCELED);
+        orderRepository.save(order);
+    }
+
     private UserModel getAuthenticatedUser() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String authenticatedEmail = userDetails.getUsername();
-        return userRepository.findByEmail(authenticatedEmail)
+        String authenticatedCPF = userDetails.getUsername();
+        return userRepository.findByCpf(authenticatedCPF)
                 .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
     }
 
@@ -95,21 +115,4 @@ public class OrderService {
                 order.getTotalAmount()
         );
     }
-
-    public void cancelOrder(Long orderId) {
-        UserModel authenticatedUser = getAuthenticatedUser();
-        OrderModel order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
-
-        if (!order.getUser().getEmail().equals(authenticatedUser.getEmail())) {
-            throw new RuntimeException("You are not authorized to cancel this order.");
-        }
-
-        order.setStatus(OrderStatus.CANCELED);
-        orderRepository.save(order);
-    }
-
-
-
-
 }
