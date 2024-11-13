@@ -17,5 +17,6 @@ public record OrderResponse(
             String description,
             double price,
             int quantity
-    ) {}
+    ) {
+    }
 }

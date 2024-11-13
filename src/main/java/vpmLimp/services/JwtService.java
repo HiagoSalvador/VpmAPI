@@ -24,7 +24,6 @@ public class JwtService {
     private String jwtSigningKey;
 
 
-
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
     }

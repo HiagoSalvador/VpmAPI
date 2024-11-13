@@ -15,7 +15,6 @@ import java.util.List;
 @Builder
 public class ProductModel {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
@@ -41,14 +40,8 @@ public class ProductModel {
     @Column(name = "categoryProduct", nullable = false, length = 50)
     private CategoryProduct categoryProduct;
 
-    @Column(name = "image_url", length = 255)
+    @Column(name = "image_url")
     private String imageUrl;
-
-
-
-
-
-
 
 
 }

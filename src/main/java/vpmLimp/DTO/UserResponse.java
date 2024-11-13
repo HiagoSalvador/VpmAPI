@@ -24,7 +24,9 @@ public record UserResponse(
                 user.getPhone()
         );
     }
+
     public record EvaluationUserName(
             String name
-    ) {}
+    ) {
+    }
 }

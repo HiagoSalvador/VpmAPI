@@ -22,7 +22,6 @@ public class AuthController {
     private final AuthService authService;
 
 
-
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginRequest loginRequest) {
         JwtAuthResponse response = authService.login(loginRequest);
@@ -56,6 +55,4 @@ public class AuthController {
         List<UserResponse> users = authService.getAllUsers();
         return ResponseEntity.ok().body(users);
     }
-
-
 }

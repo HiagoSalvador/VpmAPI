@@ -9,7 +9,7 @@ public class TesteController {
 
 
     @GetMapping
-    public String teste(){
+    public String teste() {
         return "Hello World!";
     }
 }

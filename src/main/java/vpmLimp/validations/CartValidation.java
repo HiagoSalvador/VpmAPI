@@ -11,7 +11,6 @@ import java.util.List;
 public class CartValidation {
 
 
-
     private final ProductModelRepository productModelRepository;
 
     public CartValidation(ProductModelRepository productModelRepository) {

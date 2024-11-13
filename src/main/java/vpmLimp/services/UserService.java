@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import vpmLimp.repositories.UserModelRepository;
 
 
-
 @Service
 @AllArgsConstructor
 public class UserService {

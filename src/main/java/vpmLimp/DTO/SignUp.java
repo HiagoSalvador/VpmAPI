@@ -11,4 +11,5 @@ public record SignUp(
         String phone,
         String cpf,
         String role
-) {}
+) {
+}

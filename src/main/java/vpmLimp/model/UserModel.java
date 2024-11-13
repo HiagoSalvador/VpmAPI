@@ -7,13 +7,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import vpmLimp.model.enums.UserRole;
+
 import java.util.Collection;
 import java.util.List;
 
 
-
 @Entity
-@Table(name ="user")
+@Table(name = "user")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -36,13 +36,13 @@ public class UserModel implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "address", nullable = false )
+    @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(name = "city",  nullable = false)
+    @Column(name = "city", nullable = false)
     private String city;
 
-    @Column(name = "state",  nullable = false)
+    @Column(name = "state", nullable = false)
     private String state;
 
     @Column(name = "zip_code", nullable = false)

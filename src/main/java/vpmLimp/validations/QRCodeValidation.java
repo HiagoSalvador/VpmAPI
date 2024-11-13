@@ -11,5 +11,4 @@ public class QRCodeValidation {
             throw new IllegalArgumentException("O texto para o QR Code não pode ser vazio.");
         }
     }
-
 }

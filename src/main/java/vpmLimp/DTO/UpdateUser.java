@@ -8,4 +8,5 @@ public record UpdateUser(
         String state,
         String zipCode,
         String phone
-) {}
+) {
+}

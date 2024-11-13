@@ -3,8 +3,9 @@ package vpmLimp.DTO;
 import lombok.Data;
 import vpmLimp.model.ProductModel;
 import vpmLimp.model.enums.CategoryProduct;
+
 @Data
-public class ProductResponse  {
+public class ProductResponse {
 
     private Long id;
     private String name;
@@ -36,7 +37,6 @@ public class ProductResponse  {
     public ProductResponse(ProductModel product) {
         this(product.getId(), product.getName(), product.getDescription(), product.getPrice(), product.getQuantity(), product.getCategoryProduct(), product.getImageUrl());
     }
-
 
 
 }

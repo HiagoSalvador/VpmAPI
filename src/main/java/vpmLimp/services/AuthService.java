@@ -61,6 +61,7 @@ public class AuthService {
 
         return new UserResponse(user);
     }
+
     public UserResponse getUserById(Long id) {
         UserModel user = userModelRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
